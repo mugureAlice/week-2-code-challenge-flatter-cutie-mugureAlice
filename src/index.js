@@ -1,34 +1,29 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const baseUrl = "http://localhost:3000/characters";
-    const characterBar = document.getElementById("character-bar");
-    const characterName = document.getElementById("name");
-    const characterImage = document.getElementById("image");
-    const voteCount = document.getElementById("vote-count");  // Fixed the extra space in the ID
-    const voteForm = document.getElementById("votes-form");
-    const voteInput = document.getElementById("votes");
-    const resetButton = document.getElementById("reset-btn");
-
-    fetch(baseUrl)  // Fixed fetch to use the baseUrl variable correctly
+    const baseUrl = "https://phase-1-project-back-end.vercel.app/characters";
+    fetch(baseUrl) 
         .then(res => res.json())
         .then(characters => {
             characters.forEach(character => {
+                const characterBar = document.getElementById("character-bar");
                 const span = document.createElement("span");
                 span.textContent = character.name;
                 span.style.cursor = "pointer";
                 span.addEventListener("click", () => {
                     showCharacterDetails(character);
                 });
-                characterBar.appendChild(span);  // Fixed the appendChild method
+                characterBar.appendChild(span);  
             });
 
-            if (characters.length > 0) {  // Corrected to check characters.length
-                showCharacterDetails(characters[0]);
+            if (characters.length < 0) {  
+                showCharacterDetails(characters);
             }
         })
-        .catch(err => console.error("Error fetching characters:", err));  // Added error handling for fetch
+        .catch(err => console.log(err));  
 
+    const characterName = document.getElementById("name");
     function showCharacterDetails(character) {
         characterName.textContent = character.name;
+        const characterImage = document.getElementById("image");
         characterImage.src = character.image;
         characterImage.alt = character.name;
         voteCount.textContent = character.vote;
@@ -37,13 +32,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     voteForm.addEventListener("submit", (e) => {
         e.preventDefault();
-        const votesToAdd = parseInt(voteInput.value) || 0;
+        const voteCount = document.getElementById("vote-count");  
+        const voteForm = document.getElementById("votes-form");
+        const voteInput = document.getElementById("votes");
+        const votesToAdd = parseInt(voteInput.value);
         const currentVotes = parseInt(voteCount.textContent);
         voteCount.textContent = currentVotes + votesToAdd;
         voteInput.value = "";
     });
 
-    resetButton.addEventListener("click", () => {  // Fixed the typo in addEventListener
+    const resetButton = document.getElementById("reset-btn");
+    resetButton.addEventListener("click", () => {  
         voteCount.textContent = "0";
     });
 });
